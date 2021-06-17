@@ -1,4 +1,11 @@
+## Contributing
+If you would like to submit changes to this please submit a pull request.
+Extract your updated Teamcity project to the Teamcity_AirgapNodeActions directory and also add your your new project zip
+
 # airgap-ci
+
+
+
 Teamcity config and docker compose for running airgap node actions
 
 This project will enable you to install teamcityu on an airgapped node and bootstrap a block producer.
