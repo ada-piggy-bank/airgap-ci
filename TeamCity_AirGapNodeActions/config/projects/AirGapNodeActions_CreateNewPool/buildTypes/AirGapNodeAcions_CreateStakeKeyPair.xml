@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="366c94a5-9743-4b20-93ae-df01957f2bc3" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>06. Create Stake Key Pair</name>
+  <description />
+  <settings>
+    <parameters />
+    <build-runners>
+      <runner id="RUNNER_24" name="Generate Keys" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[if ! [ -f "%STAKE_VKEY%" -o -f "%STAKE_SKEY%" ]; then
+mkdir -p %KEYS_DIR%/stake
+cardano-cli stake-address key-gen \
+    --verification-key-file %STAKE_VKEY% \
+    --signing-key-file %STAKE_SKEY%
+        else
+    echo 'The keys already exist. Please delete them if you want to regenerate.'
+fi]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</build-type>
+

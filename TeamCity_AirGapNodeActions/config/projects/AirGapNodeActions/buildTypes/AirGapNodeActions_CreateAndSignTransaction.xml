@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="13e7023e-be05-4536-8550-5d70384cac44" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Create And Sign Transaction</name>
+  <description>Template for Creating and Signing cardano-cli transactions</description>
+  <settings>
+    <options>
+      <option name="artifactRules" value="report.zip&#xA;tx.signed&#xA;create-raw.sh&#xA;sign.sh" />
+      <option name="publishArtifactCondition" value="SUCCESSFUL" />
+    </options>
+    <parameters>
+      <param name="CERTIFICATE_FILES" spec="text description='Entry for each certificate &quot;--certificate-file %POOL_CERT%&quot;' validationMode='any' display='hidden'"><![CDATA[--certificate-file %POOL_CERT% \
+--certificate-file %DELEG_CERT%]]></param>
+      <param name="CURRENT_TIP" value="" spec="text display='prompt' validationMode='any'" />
+      <param name="FEE" value="200000" spec="text validationMode='any' display='prompt'" />
+      <param name="PAYMENT_ADDRESS" value="addr1qyxmvzky30a7qlh2t9e7mg34j2mtytrq6p0gd8u5dv4c83gv09kf5cheqk2rlmxw2ucg6jrzwt6qnxmaa0m568v0ntks32mhzs" />
+      <param name="POOL_DEPOSIT" value="0" spec="text display='prompt' description='Leave as Zero unless you are registering your pool for the first time' validationMode='any'" />
+      <param name="SIGNING_KEYS" spec="text description='Line for each key &quot;--signing-key-file %PAYMENT_SKEY% \&quot;' validationMode='any' display='hidden'"><![CDATA[--signing-key-file %PAYMENT_SKEY% \
+--signing-key-file %STAKE_SKEY% \
+--signing-key-file %NODE_SKEY%]]></param>
+      <param name="TIP_GRACE" value="10000" spec="text validationMode='any' display='prompt'" />
+      <param name="TOTAL_BALANCE" value="" spec="text display='prompt' validationMode='any'" />
+      <param name="TX_IN" value="" spec="text description='run &quot;getBalanceAndTransachtions.sh&quot; on BP node and scan value to here' validationMode='any' display='prompt'" />
+      <param name="TX_OUT" value="$PAYMENT_ADDRESS+$(expr $TOTAL_BALANCE - $POOL_DEPOSIT - $FEE)" spec="text display='hidden' validationMode='any'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_40" name="Create Raw Transaction" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[PAYMENT_ADDRESS=%PAYMENT_ADDRESS%
+TOTAL_BALANCE=%TOTAL_BALANCE%
+POOL_DEPOSIT=%POOL_DEPOSIT%
+TX_IN=%TX_IN%
+FEE=%FEE%
+TX_OUT=%TX_OUT%
+CURRENT_TIP=%CURRENT_TIP%
+TIP_GRACE=%TIP_GRACE%
+
+cat > create-raw.sh << EOF
+cardano-cli transaction build-raw \
+    --tx-in $TX_IN \
+    --tx-out $TX_OUT \
+    --invalid-hereafter $(( ${CURRENT_TIP} + ${TIP_GRACE})) \
+    --fee $FEE \
+    %CERTIFICATE_FILES% \
+    --out-file tx.raw
+EOF
+bash create-raw.sh]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_41" name="Sign Transaction" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cat > sign.sh << EOF
+cardano-cli transaction sign \
+--tx-body-file tx.raw \
+%SIGNING_KEYS% \
+%NETWORK_CONFIG% \
+--out-file tx.signed
+EOF
+bash sign.sh]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_42" name="Create QR Code" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="qrencode -r tx.signed -s 2 -l L -o tx-signed.png" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_43" name="Create Report" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cat > index.html << EOF
+<html>
+<body>
+<h1>Signed Transaction</h1>
+<img src="./tx-signed.png" />
+</body>
+<html>
+EOF
+zip -r report.zip index.html tx-signed.png]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</template>
+

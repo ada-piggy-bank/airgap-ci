@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="b535177e-001f-47c5-b3e3-c0fefc212647" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>05. Create Payment Key Pair</name>
+  <description />
+  <settings>
+    <parameters />
+    <build-runners>
+      <runner id="RUNNER_23" name="Create Keys" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[if ! [ -f "%PAYMENT_VKEY%" -o -f "%PAYMENT_SKEY%" ]; then
+mkdir -p %KEYS_DIR%/payment
+cardano-cli address key-gen \
+    --verification-key-file %PAYMENT_VKEY% \
+    --signing-key-file %PAYMENT_SKEY%
+        else
+    echo 'The keys already exist. Please delete them if you want to regenerate.'
+fi]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</build-type>
+

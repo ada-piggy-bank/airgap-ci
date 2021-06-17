@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="20543243-2695-4076-b0fc-e87b54eadecf" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>09. Create Stake Certificate</name>
+  <description />
+  <settings ref="AirGapNodeActions_RunCommandAndGenerateArifactReport">
+    <parameters>
+      <param name="ARTIFACT_NAME" value="Stake Certificate" spec="text display='hidden' validationMode='any'" />
+      <param name="ARTIFACT_PATH" value="%STAKE_CERT%" spec="text validationMode='any' display='hidden'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_9" name="Run Command" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cardano-cli stake-address registration-certificate \
+    --stake-verification-key-file %STAKE_VKEY% \
+    --out-file %ARTIFACT_PATH%]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <dependencies>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_CreateStakeKeyPair">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

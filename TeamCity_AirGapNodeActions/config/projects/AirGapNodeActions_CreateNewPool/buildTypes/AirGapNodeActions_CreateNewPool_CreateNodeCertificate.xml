@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="deabf9c9-f155-43e1-afa5-99ae389383af" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>04. Create Node Certificate</name>
+  <description />
+  <settings ref="AirGapNodeActions_RunCommandAndGenerateArifactReport">
+    <parameters>
+      <param name="ARTIFACT_NAME" value="Node Certificate" spec="text display='hidden' validationMode='any'" />
+      <param name="ARTIFACT_PATH" value="%NODE_CERT%" spec="text validationMode='any' display='hidden'" />
+      <param name="KES_PERIOD" value="" spec="text display='prompt' validationMode='any'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_9" name="Run Command" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[KES_PERIOD=%KES_PERIOD%
+mkdir %CERTS_DIR%
+cardano-cli node issue-op-cert \
+--kes-verification-key-file %KES_VKEY% \
+--cold-signing-key-file %NODE_SKEY% \
+--operational-certificate-issue-counter %NODE_COUNTER% \
+--kes-period ${KES_PERIOD} \
+--out-file %ARTIFACT_PATH%]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <dependencies>
+      <depend-on sourceBuildTypeId="AirGapNodeActions_CreateNewPool_CreateKesKeyPair">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_GenerateColdKeys">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

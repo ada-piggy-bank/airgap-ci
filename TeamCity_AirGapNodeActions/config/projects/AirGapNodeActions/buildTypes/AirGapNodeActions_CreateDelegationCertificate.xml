@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="7e10b0f4-9145-46d3-8b26-a48547b2dcbd" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Create Delegation Certificate</name>
+  <settings>
+    <options>
+      <option name="artifactRules" value="%DELEG_CERT%&#xA;report.zip" />
+    </options>
+    <parameters />
+    <build-runners>
+      <runner id="RUNNER_47" name="Create Delegation Certificate" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cardano-cli stake-address delegation-certificate \
+    --stake-verification-key-file %STAKE_VKEY% \
+    --cold-verification-key-file %NODE_VKEY% \
+    --out-file %DELEG_CERT%]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_48" name="Create QR Code" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="qrencode -r %DELEG_CERT% -s 2 -l L -o deleg-cert.png" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_49" name="Create Report" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cat > index.html << EOF
+<html>
+<body>
+<h1>Delegation Certificate</h1>
+<img src="./deleg-cert.png" />
+</body>
+<html>
+EOF
+zip -r report.zip index.html deleg-cert.png]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</template>
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="d5dc7010-d4fe-4e4f-a502-544051a672c5" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>12. Create Delegation Certificate</name>
+  <description />
+  <settings ref="AirGapNodeActions_RunCommandAndGenerateArifactReport">
+    <parameters>
+      <param name="ARTIFACT_NAME" value="Delegation Certificate" spec="text display='hidden' validationMode='any'" />
+      <param name="ARTIFACT_PATH" value="%DELEG_CERT%" spec="text validationMode='any' display='hidden'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_9" name="Run Command" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cardano-cli stake-address delegation-certificate \
+    --stake-verification-key-file %STAKE_VKEY% \
+    --cold-verification-key-file %NODE_VKEY% \
+    --out-file %ARTIFACT_PATH%]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <dependencies>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_GenerateColdKeys">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_CreateStakeKeyPair">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

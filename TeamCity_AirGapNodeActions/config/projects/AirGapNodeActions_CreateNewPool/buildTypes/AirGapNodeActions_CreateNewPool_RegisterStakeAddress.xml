@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="fe04bc28-babf-46ec-a283-bf23621c0891" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>10. Register Stake Address</name>
+  <description />
+  <settings ref="AirGapNodeActions_CreateAndSignTransaction">
+    <options>
+      <option name="publishArtifactCondition" value="NORMALLY_FINISHED" />
+    </options>
+    <parameters>
+      <param name="CERTIFICATE_FILES" value="--certificate-file %STAKE_CERT%" spec="text description='Entry for each certificate &quot;--certificate-file %POOL_CERT%&quot;' validationMode='any' display='hidden'" />
+    </parameters>
+    <build-runners />
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <dependencies>
+      <depend-on sourceBuildTypeId="AirGapNodeActions_CreateNewPool_CreateStakeCertificate">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

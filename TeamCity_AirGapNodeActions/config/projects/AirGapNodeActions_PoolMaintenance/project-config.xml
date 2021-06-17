@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="AirGapNodeActions" uuid="439394ee-d301-4011-8cb5-4e97a6815493" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Pool Maintenance</name>
+  <parameters />
+  <cleanup />
+</project>
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="dfd21644-3c4a-4f62-9dd2-17b6c841d286" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Air Gap Node Actions</name>
+  <parameters>
+    <param name="CERTS_DIR" value="%teamcity.agent.home.dir%/certs" spec="text display='hidden' validationMode='any'" />
+    <param name="COLD_KEYS_DIR" value="%KEYS_DIR%/cold" spec="text display='hidden' validationMode='any'" />
+    <param name="DELEG_CERT" value="%CERTS_DIR%/deleg.cert" spec="text display='hidden' validationMode='any'" />
+    <param name="KES_SKEY" value="%KEYS_DIR%/kes/kes.skey" spec="text display='hidden' validationMode='any'" />
+    <param name="KES_VKEY" value="%KEYS_DIR%/kes/kes.vkey" spec="text display='hidden' validationMode='any'" />
+    <param name="KEYS_DIR" value="%teamcity.agent.home.dir%/keys" spec="text display='hidden' validationMode='any'" />
+    <param name="NETWORK_CONFIG" value="--mainnet" spec="text description='--maninet || --testnet-magic 1097911063' validationMode='any' display='hidden'" />
+    <param name="NODE_CERT" value="%CERTS_DIR%/node.cert" spec="text display='hidden' validationMode='any'" />
+    <param name="NODE_COUNTER" value="%COLD_KEYS_DIR%/node.counter" spec="text display='hidden' validationMode='any'" />
+    <param name="NODE_SKEY" value="%COLD_KEYS_DIR%/node.skey" spec="text display='hidden' validationMode='any'" />
+    <param name="NODE_VKEY" value="%COLD_KEYS_DIR%/node.vkey" spec="text display='hidden' validationMode='any'" />
+    <param name="PAYMENT_SKEY" value="%KEYS_DIR%/payment/payment.skey" spec="text display='hidden' validationMode='any'" />
+    <param name="PAYMENT_VKEY" value="%KEYS_DIR%/payment/payment.vkey" spec="text display='hidden' validationMode='any'" />
+    <param name="POOL_CERT" value="%CERTS_DIR%/pool.cert" spec="text display='hidden' validationMode='any'" />
+    <param name="POOL_ID" value="%CERTS_DIR%/stakepoolid.txt" />
+    <param name="STAKE_CERT" value="%CERTS_DIR%/stake.cert" spec="text display='hidden' validationMode='any'" />
+    <param name="STAKE_SKEY" value="%KEYS_DIR%/stake/stake.skey" spec="text display='hidden' validationMode='any'" />
+    <param name="STAKE_VKEY" value="%KEYS_DIR%/stake/stake.vkey" spec="text display='hidden' validationMode='any'" />
+    <param name="VRF_SKEY" value="%KEYS_DIR%/vrf/vrf.skey" spec="text display='hidden' validationMode='any'" />
+    <param name="VRF_VKEY" value="%KEYS_DIR%/vrf/vrf.vkey" spec="text display='hidden' validationMode='any'" />
+  </parameters>
+  <cleanup />
+</project>
+

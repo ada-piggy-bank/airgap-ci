@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="821a7ecf-9c56-4b21-889f-70a8abc2d2e0" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>08. Create Payment Address</name>
+  <description />
+  <settings ref="AirGapNodeActions_RunCommandAndGenerateArifactReport">
+    <parameters>
+      <param name="ARTIFACT_NAME" value="Payment Address" spec="text display='hidden' validationMode='any'" />
+      <param name="ARTIFACT_PATH" value="%PAYMENT_ADDRESS%" spec="text validationMode='any' display='hidden'" />
+      <param name="PAYMENT_ADDRESS" value="payment.addr" spec="text display='hidden' validationMode='any'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_9" name="Run Command" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cardano-cli address build \
+    --payment-verification-key-file %PAYMENT_VKEY% \
+    --stake-verification-key-file %STAKE_VKEY% \
+    --out-file %PAYMENT_ADDRESS% \
+    %NETWORK_CONFIG%]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <dependencies>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_CreatePaymentKeyPair">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_CreateStakeKeyPair">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

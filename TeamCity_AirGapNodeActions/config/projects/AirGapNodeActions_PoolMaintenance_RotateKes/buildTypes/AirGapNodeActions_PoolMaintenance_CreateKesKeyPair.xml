@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="843a98e4-23d5-4b82-b052-2730151a9af7" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Create KES Key Pair</name>
+  <description />
+  <settings ref="AirGapNodeActions_RunCommandAndGenerateArifactReport">
+    <parameters>
+      <param name="ARTIFACT_NAME" value="KES SKey" spec="text display='hidden' validationMode='any'" />
+      <param name="ARTIFACT_PATH" value="%KES_SKEY%" spec="text validationMode='any' display='hidden'" />
+    </parameters>
+    <build-runners order="RUNNER_9, RUNNER_10, RUNNER_11">
+      <runner id="RUNNER_9" name="Run Command" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[mkdir -p %KEYS_DIR%/kes
+cardano-cli node key-gen-KES \
+    --verification-key-file %KES_VKEY% \
+    --signing-key-file %KES_SKEY%]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</build-type>
+

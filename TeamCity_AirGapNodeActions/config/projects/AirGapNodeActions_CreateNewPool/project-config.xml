@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" parent-id="AirGapNodeActions" uuid="9b322e49-b140-43a0-9fdc-2b7f1487cf85" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Create New Pool</name>
+  <parameters />
+  <cleanup />
+</project>
+

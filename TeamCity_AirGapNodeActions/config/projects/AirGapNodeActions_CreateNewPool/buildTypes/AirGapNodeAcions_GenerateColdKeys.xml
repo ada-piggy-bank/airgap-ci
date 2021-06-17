@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="c7535c1e-dc31-4f3f-8371-edba5ef45b0f" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>02. Create Cold Keys</name>
+  <description />
+  <settings>
+    <options>
+      <option name="publishArtifactCondition" value="SUCCESSFUL" />
+    </options>
+    <parameters />
+    <build-runners>
+      <runner id="RUNNER_5" name="Create Cold Keys" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[NODE_VKEY=%NODE_VKEY%
+NODE_SKEY=%NODE_SKEY%
+NODE_COUNTER=%NODE_COUNTER%
+if ! [ -f "$NODE_VKEY" -o -f "$NODE_SKEY" -o -f "$NODE_COUNTER" ]; then
+    mkdir -p %COLD_KEYS_DIR%
+    cardano-cli node key-gen \
+    --cold-verification-key-file $NODE_VKEY\
+    --cold-signing-key-file $NODE_SKEY \
+    --operational-certificate-issue-counter $NODE_COUNTER
+    else
+    echo 'The keys already exist. Please delete them if you want to regenerate.'
+fi]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</build-type>
+

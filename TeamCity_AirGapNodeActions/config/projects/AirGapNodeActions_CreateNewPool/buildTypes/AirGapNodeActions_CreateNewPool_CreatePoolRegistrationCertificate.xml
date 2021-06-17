@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="78e9f2c4-457d-4b0c-8084-f705baaff09d" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>11. Create Pool Registration Certificate</name>
+  <description />
+  <settings ref="AirGapNodeActions_RunCommandAndGenerateArifactReport">
+    <parameters>
+      <param name="ARTIFACT_NAME" value="Pool Registration Certificate" spec="text display='hidden' validationMode='any'" />
+      <param name="ARTIFACT_PATH" value="%POOL_CERT%" spec="text validationMode='any' display='hidden'" />
+      <param name="METADATA_HASH" value="64d3bef939efee334ee3ff69863eae432fcac9eb86c0261fc02fa0eed85ec326" />
+      <param name="METADATA_URL" value="https://tinyurl.com/3r5r8p4s" />
+      <param name="POOL_COST_LOVELACE" value="340000000" />
+      <param name="POOL_MARGIN_DECIMAL" value="0.02" />
+      <param name="POOL_ONE_IP" value="18.168.77.169" />
+      <param name="POOL_PLEDGE_LOVELACE" value="300000000" />
+      <param name="POOL_PORT" value="3001" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_9" name="Run Command" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cardano-cli stake-pool registration-certificate \
+--out-file %ARTIFACT_PATH% \
+--cold-verification-key-file %NODE_VKEY% \
+--vrf-verification-key-file %VRF_VKEY% \
+--pool-pledge %POOL_PLEDGE_LOVELACE% \
+--pool-cost %POOL_COST_LOVELACE% \
+--pool-margin %POOL_MARGIN_DECIMAL% \
+--pool-reward-account-verification-key-file %STAKE_VKEY% \
+--pool-owner-stake-verification-key-file %STAKE_VKEY% \
+%NETWORK_CONFIG% \
+--pool-relay-port %POOL_PORT% \
+--pool-relay-ipv4 %POOL_ONE_IP% \
+--metadata-url %METADATA_URL% \
+--metadata-hash %METADATA_HASH%]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <dependencies>
+      <depend-on sourceBuildTypeId="AirGapNodeActions_CreateNewPool_CreateVrfKeyPair">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_GenerateColdKeys">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+      <depend-on sourceBuildTypeId="AirGapNodeAcions_CreateStakeKeyPair">
+        <options>
+          <option name="take-started-build-with-same-revisions" value="true" />
+          <option name="take-successful-builds-only" value="true" />
+        </options>
+      </depend-on>
+    </dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

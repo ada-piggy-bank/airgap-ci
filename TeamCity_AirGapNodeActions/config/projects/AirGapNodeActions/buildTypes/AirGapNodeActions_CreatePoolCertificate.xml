@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="80c953ef-df50-46e8-a5f5-02ed5dbd26fb" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Create Pool Certificate</name>
+  <description>Define Pool parameters and Generate a certificate</description>
+  <settings>
+    <options>
+      <option name="artifactRules" value="pool.cert&#xA;report.zip&#xA;create-pool-certificate.sh" />
+    </options>
+    <parameters>
+      <param name="METADATA_HASH" value="" />
+      <param name="METADATA_URL" value="" />
+      <param name="POOL_COST_LOVELACE" value="340000000 " />
+      <param name="POOL_MARGIN_DECIMAL" value="0.02" />
+      <param name="POOL_PLEDGE_LOVELACE" value="300000000" />
+      <param name="POOL_PORT" value="6000" />
+      <param name="POOL_RELAYS" spec="text display='normal' description='All Relays Ip|'s or domain names and Ports' validationMode='any'"><![CDATA[--pool-relay-port %POOL_PORT% \
+--pool-relay-ipv4 [RELAY_ONE_IP] \
+--pool-relay-port %POOL_PORT% \
+--pool-relay-ipv4 [RELAY_TWO_IP]]]></param>
+      <param name="REWARD_VKEY" value="%STAKE_VKEY%" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_44" name="Create Pool Certificate" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cat > create-pool-certificate.sh << EOF
+cardano-cli stake-pool registration-certificate \
+--out-file %POOL_CERT% \
+--cold-verification-key-file %NODE_VKEY% \
+--vrf-verification-key-file %VRF_VKEY% \
+--pool-pledge %POOL_PLEDGE_LOVELACE% \
+--pool-cost %POOL_COST_LOVELACE% \
+--pool-margin %POOL_MARGIN_DECIMAL% \
+--pool-reward-account-verification-key-file %REWARD_VKEY% \
+--pool-owner-stake-verification-key-file %STAKE_VKEY% \
+%NETWORK_CONFIG% \
+%POOL_RELAYS% \
+--metadata-url %METADATA_URL% \
+--metadata-hash %METADATA_HASH%
+EOF
+bash create-pool-certificate.sh]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_45" name="Create QR Code" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="qrencode -r %POOL_CERT% -s 2 -l L -o pool-cert.png" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_46" name="Create Report" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cat > index.html << EOF
+<html>
+<body>
+<h1>Pool Certificate</h1>
+<img src="./pool-cert.png" />
+</body>
+<html>
+EOF
+zip -r report.zip index.html pool-cert.png]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</template>
+

@@ -1,0 +1,23 @@
+version: "2.1"
+services:
+  server:
+    image: jetbrains/teamcity-server:${TEAMCITY_VERSION}
+    privileged: true
+    ports:
+      - "8111:8111"
+    volumes:
+      - ./server/data_dir:/data/teamcity_server/datadir
+      - ./server/log_dir:/opt/teamcity/logs
+  agent:
+    build:
+      context: ./agents/cli-agent
+    image: cli-agent:1.0
+    privileged: true
+    volumes:
+      - ./agents/cli-agent/lib:/data/teamcity_agent/lib
+      - ./agents/cli-agent/conf:/data/teamcity_agent/conf
+      - ./agents/cli-agent/keys:/opt/buildagent/keys  ##Only used in air gapped machine
+      - ./agents/cli-agent/certs:/opt/buildagent/certs
+    environment:
+      - SERVER_URL=http://server:8111
+      - AGENT_NAME="CLI Agent"

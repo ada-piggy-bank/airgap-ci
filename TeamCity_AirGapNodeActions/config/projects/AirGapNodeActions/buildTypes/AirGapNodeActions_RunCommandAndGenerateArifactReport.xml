@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="e486eb87-a49e-4650-a908-e7ac21c0fa8a" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2020.1/project-config.xsd">
+  <name>Run Command and Generate QR</name>
+  <settings>
+    <options>
+      <option name="artifactRules" value="report.zip" />
+    </options>
+    <parameters>
+      <param name="ARTIFACT_NAME" value="Override Me" spec="text display='hidden' validationMode='any'" />
+      <param name="ARTIFACT_PATH" value="Override Me" spec="text validationMode='any' display='hidden'" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_9" name="Run Command" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="#Override Me and add %ARTIFACT_PATH% = YOUR_ARTIFACT_PATH" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_10" name="Generate QR Code" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="qrencode -r %ARTIFACT_PATH% -s 2 -l L -o artifact.png" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_11" name="" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[cat > index.html << EOF
+<html>
+<body>
+<h1>%ARTIFACT_NAME%</h1>
+<img src="./artifact.png" />
+<h2>$(cat %ARTIFACT_PATH%)</h2>
+</body>
+<html>
+EOF
+zip -r report.zip index.html artifact.png]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</template>
+
